@@ -8,7 +8,9 @@ async function retrieveShortLivedToken(api_token) {
       Authorization: `Bearer ${api_token}`
     }
   }).then((response) => {
-  }, (ajax) => {
+    console.log(res)
+}, (res) => {
+    console.log(res)
   })
 }
 
