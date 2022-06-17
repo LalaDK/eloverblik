@@ -6,6 +6,51 @@ const ACCESS_TOKEN_FILENAME = 'access-token';
 const DEV_REFRESH_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlblR5cGUiOiJDdXN0b21lckFQSV9SZWZyZXNoIiwidG9rZW5pZCI6ImI5YWQwMDUwLTNiNGMtNDA2MS05OWExLTczOGM2MmRiY2U5NCIsIndlYkFwcCI6WyJDdXN0b21lckFwaSIsIkN1c3RvbWVyQXBwQXBpIl0sImp0aSI6ImI5YWQwMDUwLTNiNGMtNDA2MS05OWExLTczOGM2MmRiY2U5NCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiUElEOjkyMDgtMjAwMi0yLTcyODE3MzQ2MDA0NyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2dpdmVubmFtZSI6Ik1hZHMgRGFtIEh2aWRiamVyZyBFY2thcmR0IiwibG9naW5UeXBlIjoiS2V5Q2FyZCIsInBpZCI6IjkyMDgtMjAwMi0yLTcyODE3MzQ2MDA0NyIsInR5cCI6IlBPQ0VTIiwidXNlcklkIjoiMTU0NTQiLCJleHAiOjE2ODYzOTg2NjgsImlzcyI6IkVuZXJnaW5ldCIsInRva2VuTmFtZSI6IkFQSSIsImF1ZCI6IkVuZXJnaW5ldCJ9.eGM3JS9lZxlFebN_zUSG65RZbHb-ryBHYWpyWQyvaDc'
 var DEV_ACCESS_TOKEN;
 
+function post(url, data) {
+    return new Promise((resolve, reject) => {
+    axios({
+      url,
+      data,
+      method: 'post',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${ refresh_token }`
+      }
+    }).then((response) => {
+    resolve({
+      status: 'ok',
+      data: response.data
+    });
+    },
+    (error) => {
+      if(error.response) {
+        reject({
+          status: 'error',
+          data: {
+            data: error.response.data,
+            headers: error.response.headers,
+            status: error.response.status
+          }
+        });
+      } else if (error.request) {
+        reject({
+          status: 'error',
+          data: error.request
+        });
+      } else {
+        reject({
+          status: 'error',
+          data: error.message
+        });
+      }
+    });
+    });
+}
+
+function get(url) {
+
+}
+
 function jwtExpirationDate(jwt_token) {
   let jwt = jwtDecode(jwt_token);
   let expirationDate = new Date(0);
