@@ -46,15 +46,24 @@ function getMeteringPoints (accessToken, includeAll) {
   return get(BASE_API_URL + `/meteringpoints/meteringpoints?includeAll=${!!includeAll}`, accessToken)
 }
 
-async function getDetails (accessToken, meteringPoint) {
+function getDetails (accessToken, meteringPoint) {
   const data = {
     meteringPoints: {
       meteringPoint: [meteringPoint.toString()]
     }
   }
-  post(BASE_API_URL + '/meteringpoints/meteringpoint/getdetails', data, accessToken)
+  return post(BASE_API_URL + '/meteringpoints/meteringpoint/getdetails', data, accessToken)
+}
+
+function getTimeSeries (accessToken, meteringPoint, from, to, aggregation) {
+  const data = {
+    meteringPoints: {
+      meteringPoint: [meteringPoint.toString()]
+    }
+  }
+  return post(BASE_API_URL + `/meterdata/gettimeseries/${ from }/${ to }/${ aggregation }`, data, accessToken)
 }
 
 module.exports = {
-  getAccessToken, getDetails, getMeteringPoints
+  getAccessToken, getDetails, getMeteringPoints, getTimeSeries
 }

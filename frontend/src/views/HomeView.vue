@@ -8,7 +8,7 @@ export default {
       accessToken: null,
       refreshToken: null,
       meteringPoints: [],
-      meteringPoint: null,
+      meteringPointId: null,
       collapse: 1
     }
   },
@@ -41,7 +41,18 @@ export default {
       Axios.get('http://localhost:4000/meteringpoints?token=' + accessToken)
       .then((response) => {
         this.meteringPoints = response.data.meteringPoints;
-        this.meteringPoint = ((this.meteringPoints || [])[0] || {}).meteringPointId;
+        this.meteringPointId = ((this.meteringPoints || [])[0] || {}).meteringPointId;
+      });
+    },
+    
+    fetchTimeSeries(accessToken) {
+      Axios.post('http://localhost:4000/gettimeseries?token=' + accessToken, {
+        from: '2022-01-01',
+        to: '2022-06-21',
+        aggregation: 'Year'
+      })
+      .then((response) => {
+      console.log(response);
       });
     }
   },
@@ -58,6 +69,13 @@ export default {
       if(after) {
         this.fetchMeteringPoints(after);
       }
+    },
+
+    meteringPointId(after, before) {
+    if(after) {
+    this.fetchTimeSeries(this.accessToken);
+    }
+
     }
   },
 
@@ -72,7 +90,8 @@ export default {
 
 <template>
 <div>
-<el-select v-model="meteringPoint" class="m-2" placeholder="Select">
+{{ meteringPointId}}
+<el-select v-model="meteringPointId" class="m-2" placeholder="Select">
 <el-option
 v-for="item in meteringPoints"
 :key="item.meteringPointId"
