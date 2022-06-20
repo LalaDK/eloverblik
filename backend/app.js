@@ -1,41 +1,38 @@
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 4000
 const axios = require('axios')
 const expressLogging = require('express-logging');
 const logger = require('logops');
 const eloverblik = require('./func.js');
 app.use(expressLogging(logger))
 
-app.get('/token', async (req, res) => {
-  let accessToken = await eloverblik.getAccessToken(req.query.token);
-  if(accessToken) {
+app.get('/token', (req, res, next) => {
+  eloverblik.getAccessToken(req.query.token)
+  .then((accessToken) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); // If needed
+    res.setHeader('Access-Control-Allow-Credentials', true); // If needed
     res.json({accessToken});
-  } else {
-    res.status(500);
-    res.json({error: "Unable to fetch token."});
-  }
+  }, (error) => {
+    next(error);
+  });
 })
 
 app.get('/meteringpoints', async (req, res) => {
-  let meteringpoints = await eloverblik.getMeteringPoints(req.query.token, req.query.includeAll == 'true');
-  if(meteringpoints) {
-    res.json({meteringpoints});
-  } else {
-    res.status(500);
-    res.json({error: "Unable to fetch meteringspoints."});
-  }
+  let meteringPoints = await eloverblik.getMeteringPoints(req.query.token, req.query.includeAll == 'true');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); // If needed
+    res.setHeader('Access-Control-Allow-Credentials', true); // If needed
+  res.json({meteringPoints});
 })
 
 
 app.get('/getdetails', async (req, res) => {
   let details = await eloverblik.getDetails(req.query.token, req.query.meteringpoint.toString());
-  if(details) {
-    res.json({details});
-  } else {
-    res.status(500);
-    res.json({error: "Unable to fetch details."});
-  }
+  res.json({details});
 })
 
 app.listen(port, () => {
