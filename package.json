@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "base64url": "^3.0.1",
-    "jose": "^4.8.1"
-  }
-}
