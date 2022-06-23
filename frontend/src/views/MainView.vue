@@ -102,6 +102,9 @@ v-for="item in meteringPoints"
 </el-select>
 </el-col>
 </el-row>
-Timeseries: {{ timeseries}}
+Interval: {{ timeseries['timeseries'][0]['MyEnergyData_MarketDocument']['period.timeInterval'] }}
+<br>
+<br>
+KWh: {{ timeseries['timeseries'][0]['MyEnergyData_MarketDocument']['TimeSeries'][0]['Period'][0]['Point'][0]['out_Quantity.quantity'] }}
 </div>
 </template>
