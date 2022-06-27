@@ -1,4 +1,5 @@
 const express = require('express')
+require('express-async-errors');
 const app = express()
 const cors = require('cors')
 const port = 4000
@@ -28,7 +29,7 @@ app.get('/token', (req, res, next) => {
 })
 
 app.get('/meteringpoints', async (req, res) => {
-  let meteringPoints = await eloverblik.getMeteringPoints(token, req.query.includeAll == 'true');
+  let meteringPoints = await eloverblik.getMeteringPoints(token, (req.query.includeAll || req.body.includeAll) == 'true');
   res.json({meteringPoints});
 })
 
