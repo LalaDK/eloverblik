@@ -9,7 +9,8 @@ export default {
       refreshToken: null,
       meteringPoints: [],
       meteringPointId: null,
-      timeseries: null
+      timeseries: null,
+      error: null
     }
   },
 
@@ -32,13 +33,17 @@ export default {
       Axios.get('http://localhost:4000/token?token=' + refreshToken)
         .then((response) => {
           this.accessToken = response.data.accessToken
-        }, () => {
-          this.promptRefreshToken()
+        }, (error) => {
+        console.log(error)
+          ElMessage({
+            message: error,
+            type: 'error'
+          });
         })
     },
 
     fetchMeteringPoints (accessToken) {
-      Axios.get('http://localhost:4000/meteringpoints?token=' + accessToken)
+      Axios.get('http://localhost:4000/meteringpoints?token=' + accessToken + '&includeAll=true')
         .then((response) => {
           this.meteringPoints = response.data.meteringPoints
           this.meteringPointId = ((this.meteringPoints || [])[0] || {}).meteringPointId
@@ -47,13 +52,22 @@ export default {
 
     fetchTimeSeries (accessToken) {
       Axios.post('http://localhost:4000/gettimeseries?token=' + accessToken, {
-        from: Date.create('beginning of year').format('%Y-%m-%d'),
-        to: Date.create('tomorrow').format('%Y-%m-%d'),
+        from: Date.create('2022-04-30').format('%Y-%m-%d'),
+        to: Date.create('2022-06-01').format('%Y-%m-%d'),
+        //from: Date.create('beginning of year').format('%Y-%m-%d'),
+        //to: Date.create('tomorrow').format('%Y-%m-%d'),
         aggregation: 'Year',
         meteringPoint: this.meteringPointId
       })
         .then((response) => {
           this.timeseries = response.data
+        })
+        .catch((error) => {
+        console.log(error)
+          ElMessage({
+            message: error,
+            type: 'error'
+          });
         })
     }
   },
@@ -102,9 +116,11 @@ v-for="item in meteringPoints"
 </el-select>
 </el-col>
 </el-row>
+<div v-if="timeseries">
 Interval: {{ timeseries['timeseries'][0]['MyEnergyData_MarketDocument']['period.timeInterval'] }}
 <br>
 <br>
 KWh: {{ timeseries['timeseries'][0]['MyEnergyData_MarketDocument']['TimeSeries'][0]['Period'][0]['Point'][0]['out_Quantity.quantity'] }}
+</div>
 </div>
 </template>
