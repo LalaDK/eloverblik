@@ -12,7 +12,8 @@
     "element-plus": "^2.2.6",
     "sugar": "^2.0.6",
     "vue": "^3.2.36",
-    "vue-router": "^4.0.15"
+    "vue-router": "^4.0.15",
+    "vue-spinner": "^1.0.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.3",
